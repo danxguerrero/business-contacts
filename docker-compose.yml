@@ -1,11 +1,31 @@
+version: '3'
 services:
 
-  client:
-    build: ./client
+  db: 
+    image: "postgres:9.6-alpine"
+    container_name: business-postgres
+    volumes: 
+      - business-data:/var/lib/postgresql/data
     ports: 
-      - 1234:1234
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=business-contacts
+      - POSTGRES_PASSWORD=busines-contacts
 
   server:
     build: ./server
     ports: 
       - 3000:3000
+    links:
+      - db
+
+  client:
+    build: ./client
+    ports: 
+      - 1234:1234
+    links:
+     - server
+
+
+volumes:
+  business-data:
